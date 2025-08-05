@@ -2,10 +2,35 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
+
+
+[System.Serializable]
+public class PerspectiveProportion
+{
+
+    public float m_percentLeft;
+    public float m_percentRight;
+    public float m_percentTop;
+    public float m_percentBottom;
+    public float m_ratioRightCompareToLeft;
+    public float m_ratioTopCompareToBottom;
+}
 public abstract class ReadColorMono_AbstractFourPerspectivePoints : MonoBehaviour {
 
+    public PerspectiveProportion m_proportionInfo;
     public abstract void GetPointsPercent(out Vector2 topLeft, out Vector2 topRight, out Vector2 downLeft, out Vector2 downRight);
 
+
+    public void Update()
+    {
+        GetPointsPercent(out Vector2 topLeft, out Vector2 topRight,out Vector2 downLeft,out Vector2 downRight);
+        m_proportionInfo.m_percentLeft = Math.Abs( topLeft. y - downLeft. y);
+        m_proportionInfo.m_percentRight = Math.Abs(topRight. y - downRight. y);
+        m_proportionInfo.m_percentTop = Math.Abs(topLeft. x - topRight. x);
+        m_proportionInfo.m_percentBottom = Math.Abs(downLeft. x - downRight.x);
+        m_proportionInfo.m_ratioRightCompareToLeft = m_proportionInfo.m_percentRight / m_proportionInfo.m_percentLeft;
+        m_proportionInfo.m_ratioTopCompareToBottom = m_proportionInfo.m_percentTop / m_proportionInfo.m_percentBottom;
+    }
 }
 
 

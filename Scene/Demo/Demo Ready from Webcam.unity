@@ -309,8 +309,8 @@ MonoBehaviour:
     m_rightSquare2Int: {x: 0, y: 0}
     m_rightSquare3Int: {x: 0, y: 0}
   m_lineColor: {r: 0, g: 0, b: 0, a: 0}
-  segmentCount: 300
-  m_squareCount: 60
+  segmentPerSquareCount: 21
+  m_squareCount: 39
   m_onCropSizeChanged:
     m_PersistentCalls:
       m_Calls:
@@ -335,6 +335,7 @@ MonoBehaviour:
   m_line1: []
   m_line2: []
   m_line3: []
+  m_testMultiplicator: 1
   m_pointRadius: 1
   m_linePointRadius: 2
   m_useUpdate: 1
@@ -916,14 +917,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b7973ca21dd89147b64518e57beec65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_topLeftHorizontalX: 0.018
-  m_topLeftVerticalY: 0.036
-  m_topRightHorizontalX: 0.618
-  m_topRightVerticalY: 0.091
-  m_bottomLeftHorizontalX: 0.03
-  m_bottomLeftVerticalY: 0.115
-  m_bottomRightHorizontalX: 0.612
-  m_bottomRightVerticalY: 0.182
+  m_proportionInfo:
+    m_percentLeft: 0.110000014
+    m_percentRight: 0.143
+    m_percentTop: 0.853
+    m_percentBottom: 0.861
+    m_ratioRightCompareToLeft: 1.2999998
+    m_ratioTopCompareToBottom: 0.9907085
+  m_topLeftHorizontalX: 0.037
+  m_topLeftVerticalY: 0.341
+  m_topRightHorizontalX: 0.89
+  m_topRightVerticalY: 0.271
+  m_bottomLeftHorizontalX: 0.029
+  m_bottomLeftVerticalY: 0.451
+  m_bottomRightHorizontalX: 0.89
+  m_bottomRightVerticalY: 0.414
 --- !u!4 &1011193394
 Transform:
   m_ObjectHideFlags: 0

@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 
+
+
 public class ReadColorMono_DebugFont4BitsBRGBLines : MonoBehaviour
 {
     public ReadColorMono_AbstractFourPerspectivePoints m_perspectivePoints;
@@ -69,10 +71,19 @@ public class ReadColorMono_DebugFont4BitsBRGBLines : MonoBehaviour
         int iy = Mathf.RoundToInt((1f - y) * height);
         result = new Vector2Int(ix, iy);
     }
-    public
-        int segmentCount = 300;
+    public  int segmentPerSquareCount = 11;
+    
+    public int GetLineBarPixels()
+    {
+
+        return segmentPerSquareCount* m_squareCount;
+
+
+    }
+    
     public void FetchPointsPctConcerned(Vector2 startPct, Vector2 endPct, int width, int height, ref List<Vector2Int> points)
     {
+        int totalPixel = GetLineBarPixels();
         GetVector2Int(startPct, width, height, out Vector2Int startInt);
         GetVector2Int(endPct, width, height, out Vector2Int endInt);
 
@@ -82,12 +93,12 @@ public class ReadColorMono_DebugFont4BitsBRGBLines : MonoBehaviour
         Vector2 direction = endPct - startPct;
         float mag = direction.magnitude;
 
-        if (points.Capacity < segmentCount)
-            points.Capacity = segmentCount;
+        if (points.Capacity < totalPixel)
+            points.Capacity = totalPixel;
 
-        for (int i = 0; i < segmentCount; i++)
+        for (int i = 0; i < totalPixel; i++)
         {
-            float t = (float)i / (segmentCount - 1);
+            float t = (float)i / (totalPixel - 1);
             Vector2 lerpPct = Vector2.Lerp(startPct, endPct, t);
             GetVector2Int(lerpPct, width, height, out Vector2Int pixel);
 
@@ -209,15 +220,17 @@ public class ReadColorMono_DebugFont4BitsBRGBLines : MonoBehaviour
     }
 
 
+   
+
     [ContextMenu("Refesh")]
     public void Refresh()
     {
-
+        int totalPixel = GetLineBarPixels();
 
         if (m_source == null) return;
         m_source.GetWidth(out int width);
         m_source.GetHeight(out int height);
-        if (width<=0 || height<=0) return;
+        if (width <= 0 || height <= 0) return;
 
 
 
@@ -246,17 +259,18 @@ public class ReadColorMono_DebugFont4BitsBRGBLines : MonoBehaviour
             m_debugPoints.Apply();
 
 
-            if (m_textureFourLine != null) { 
+            if (m_textureFourLine != null)
+            {
                 DestroyImmediate(m_textureFourLine);
             }
 
 
-            m_textureFourLine = new Texture2D(segmentCount, 4, TextureFormat.ARGB32, false,false);
+            m_textureFourLine = new Texture2D(totalPixel, 8, TextureFormat.ARGB32, false, false);
             m_textureFourLine.wrapMode = TextureWrapMode.Clamp;
             m_textureFourLine.filterMode = FilterMode.Point;
             m_textureFourLine.anisoLevel = 0;
             m_textureFourLine.Apply();
-            m_onFourLineCreated.Invoke( m_textureFourLine );
+            m_onFourLineCreated.Invoke(m_textureFourLine);
 
 
             RefreshListOfPoints();
@@ -325,23 +339,23 @@ public class ReadColorMono_DebugFont4BitsBRGBLines : MonoBehaviour
             float line2 = 5f / 8f;
             float line3 = 7f / 8f;
 
-            
-            LerpPoint(m_topLeftPercentLRTD, m_bottomLeftPercentLRTD, line0,   out m_fourLines.m_leftSquare0 , out m_fourLines.m_leftSquare0Int   );
-            LerpPoint(m_topLeftPercentLRTD, m_bottomLeftPercentLRTD  , line1, out m_fourLines.m_leftSquare1 , out m_fourLines.m_leftSquare1Int  );
-            LerpPoint(m_topLeftPercentLRTD, m_bottomLeftPercentLRTD  , line2, out m_fourLines.m_leftSquare2 , out m_fourLines.m_leftSquare2Int  );
-            LerpPoint(m_topLeftPercentLRTD, m_bottomLeftPercentLRTD  , line3, out m_fourLines.m_leftSquare3 , out m_fourLines.m_leftSquare3Int  );
-            LerpPoint(m_topRightPercentLRTD, m_bottomRightPercentLRTD, line0, out m_fourLines.m_rightSquare0, out m_fourLines.m_rightSquare0Int );
-            LerpPoint(m_topRightPercentLRTD, m_bottomRightPercentLRTD, line1, out m_fourLines.m_rightSquare1, out m_fourLines.m_rightSquare1Int );
-            LerpPoint(m_topRightPercentLRTD, m_bottomRightPercentLRTD, line2, out m_fourLines.m_rightSquare2, out m_fourLines.m_rightSquare2Int );
-            LerpPoint(m_topRightPercentLRTD, m_bottomRightPercentLRTD, line3, out m_fourLines.m_rightSquare3, out m_fourLines.m_rightSquare3Int );
+
+            LerpPoint(m_topLeftPercentLRTD, m_bottomLeftPercentLRTD, line0, out m_fourLines.m_leftSquare0, out m_fourLines.m_leftSquare0Int);
+            LerpPoint(m_topLeftPercentLRTD, m_bottomLeftPercentLRTD, line1, out m_fourLines.m_leftSquare1, out m_fourLines.m_leftSquare1Int);
+            LerpPoint(m_topLeftPercentLRTD, m_bottomLeftPercentLRTD, line2, out m_fourLines.m_leftSquare2, out m_fourLines.m_leftSquare2Int);
+            LerpPoint(m_topLeftPercentLRTD, m_bottomLeftPercentLRTD, line3, out m_fourLines.m_leftSquare3, out m_fourLines.m_leftSquare3Int);
+            LerpPoint(m_topRightPercentLRTD, m_bottomRightPercentLRTD, line0, out m_fourLines.m_rightSquare0, out m_fourLines.m_rightSquare0Int);
+            LerpPoint(m_topRightPercentLRTD, m_bottomRightPercentLRTD, line1, out m_fourLines.m_rightSquare1, out m_fourLines.m_rightSquare1Int);
+            LerpPoint(m_topRightPercentLRTD, m_bottomRightPercentLRTD, line2, out m_fourLines.m_rightSquare2, out m_fourLines.m_rightSquare2Int);
+            LerpPoint(m_topRightPercentLRTD, m_bottomRightPercentLRTD, line3, out m_fourLines.m_rightSquare3, out m_fourLines.m_rightSquare3Int);
 
 
 
 
-            DrawLineInTexture( m_fourLines.m_leftSquare0Int,  m_fourLines.m_rightSquare0Int,Color.yellow );
-            DrawLineInTexture( m_fourLines.m_leftSquare1Int,  m_fourLines.m_rightSquare1Int,Color.yellow );
-            DrawLineInTexture( m_fourLines.m_leftSquare2Int,  m_fourLines.m_rightSquare2Int,Color.yellow );
-            DrawLineInTexture(m_fourLines.m_leftSquare3Int,   m_fourLines.m_rightSquare3Int, Color.yellow );
+            DrawLineInTexture(m_fourLines.m_leftSquare0Int, m_fourLines.m_rightSquare0Int, Color.yellow);
+            DrawLineInTexture(m_fourLines.m_leftSquare1Int, m_fourLines.m_rightSquare1Int, Color.yellow);
+            DrawLineInTexture(m_fourLines.m_leftSquare2Int, m_fourLines.m_rightSquare2Int, Color.yellow);
+            DrawLineInTexture(m_fourLines.m_leftSquare3Int, m_fourLines.m_rightSquare3Int, Color.yellow);
 
 
             DrawSquare(m_topLeftInt, Color.red, dw, dh, m_pointRadius);
@@ -349,15 +363,15 @@ public class ReadColorMono_DebugFont4BitsBRGBLines : MonoBehaviour
             DrawSquare(m_bottomLeftInt, Color.blue, dw, dh, m_pointRadius);
             DrawSquare(m_bottomRightInt, Color.magenta, dw, dh, m_pointRadius);
 
-            DrawSquare( m_fourLines.m_leftSquare0Int, Color.yellow, dw, dh, m_pointRadius);
-            DrawSquare( m_fourLines.m_leftSquare1Int, Color.yellow, dw, dh, m_pointRadius);
-            DrawSquare( m_fourLines.m_leftSquare2Int, Color.yellow, dw, dh, m_pointRadius);
+            DrawSquare(m_fourLines.m_leftSquare0Int, Color.yellow, dw, dh, m_pointRadius);
+            DrawSquare(m_fourLines.m_leftSquare1Int, Color.yellow, dw, dh, m_pointRadius);
+            DrawSquare(m_fourLines.m_leftSquare2Int, Color.yellow, dw, dh, m_pointRadius);
             DrawSquare(m_fourLines.m_leftSquare3Int, Color.yellow, dw, dh, m_pointRadius);
-            DrawSquare( m_fourLines.m_rightSquare0Int, Color.yellow, dw, dh, m_pointRadius);
-            DrawSquare( m_fourLines.m_rightSquare1Int, Color.yellow, dw, dh, m_pointRadius);
-            DrawSquare( m_fourLines.m_rightSquare2Int, Color.yellow, dw, dh, m_pointRadius);
-            DrawSquare (m_fourLines.m_rightSquare3Int, Color.yellow, dw, dh, m_pointRadius);
-            
+            DrawSquare(m_fourLines.m_rightSquare0Int, Color.yellow, dw, dh, m_pointRadius);
+            DrawSquare(m_fourLines.m_rightSquare1Int, Color.yellow, dw, dh, m_pointRadius);
+            DrawSquare(m_fourLines.m_rightSquare2Int, Color.yellow, dw, dh, m_pointRadius);
+            DrawSquare(m_fourLines.m_rightSquare3Int, Color.yellow, dw, dh, m_pointRadius);
+
             //if (m_squareCount > 1)
             //{
             //    float piece = 1f / m_squareCount;
@@ -365,7 +379,7 @@ public class ReadColorMono_DebugFont4BitsBRGBLines : MonoBehaviour
             //    for (int squareI = 0; squareI < m_squareCount; squareI++)
             //    {
             //        float t = halfPiece + piece * squareI;
-                   
+
             //        Vector2Int pointLerp = LerpPoint(leftSquare0, rightSquare0, t);
             //        DrawSquare(pointLerp, Color.cyan, dw, dh, m_linePointRadius);
             //    }
@@ -390,15 +404,152 @@ public class ReadColorMono_DebugFont4BitsBRGBLines : MonoBehaviour
         FetchColorBetween(m_linePoints1, ref m_line1, m_source);
         FetchColorBetween(m_linePoints2, ref m_line2, m_source);
         FetchColorBetween(m_linePoints3, ref m_line3, m_source);
-        for (int i = 0; i < segmentCount; i++)
+
+
+        for (int i = 0; i < totalPixel; i++)
         {
-            m_textureFourLine.SetPixel( i,3, m_line0[i]);
-            m_textureFourLine.SetPixel( i,2, m_line1[i]);
-            m_textureFourLine.SetPixel( i,1, m_line2[i]);
-            m_textureFourLine.SetPixel( i,0, m_line3[i]);
+            m_textureFourLine.SetPixel(i, 3, m_line0[i]);
+            m_textureFourLine.SetPixel(i, 2, m_line1[i]);
+            m_textureFourLine.SetPixel(i, 1, m_line2[i]);
+            m_textureFourLine.SetPixel(i, 0, m_line3[i]);
         }
+
+        Texture2D t = m_textureFourLine;
+            for (int index =0 ; index < 4; index++)
+        {
+            for (int i = 1; i < t.width - 1; i++)
+            {
+
+                Color cl = t.GetPixel(i - 1, index);
+                Color cr = t.GetPixel(i + 1, index);
+                if (cl == cr)
+                    t.SetPixel(i, index, cl);
+
+            }
+        }
+
+        float ratioLeftToRight = m_perspectivePoints.m_proportionInfo.m_percentLeft / m_perspectivePoints.m_proportionInfo.m_percentRight;
+
+        float left = m_perspectivePoints.m_proportionInfo.m_percentLeft;
+        float right = m_perspectivePoints.m_proportionInfo.m_percentRight;
+        MarkGradianLineInTheTexture(totalPixel,left, right, m_squareCount , segmentPerSquareCount, m_textureFourLine);
+
+
+
+
+        TurnToAverageLine(m_textureFourLine, 0);
+        TurnToAverageLine(m_textureFourLine, 1);
+        TurnToAverageLine(m_textureFourLine, 2);
+        TurnToAverageLine(m_textureFourLine, 3);
+
         m_textureFourLine.Apply();
     }
+
+    private void TurnToAverageLine(Texture2D t, int index)
+    {
+        int redCount = 0;
+        int greenCount = 0;
+        int blueCount = 0;
+        int blackCount= 0;
+
+        int startIndex = 0;
+        bool applyFound = false;
+
+
+        for (int i = 0; i < t.width; i++) {
+
+            Color c = t.GetPixel(i, index);
+            
+           
+
+
+            if (c.r > 0.5 && c.g < 0.5 && c.b < 0.5) redCount++;
+            else if (c.g > 0.5 && c.r < 0.5 && c.b < 0.5) greenCount++;
+            else if (c.b > 0.5 && c.g < 0.5 && c.r < 0.5) blueCount++;
+            else if (c.b < 0.5 && c.g < 0.5 && c.r < 0.5) blackCount++;
+            else
+            {
+
+                applyFound=true;
+            }
+
+            if (i == t.width - 1)
+                applyFound = true;
+
+
+            if (applyFound) {
+
+                Color newColor = Color.black;
+                if (redCount > greenCount && redCount > blueCount && redCount > blackCount) newColor = Color.red;
+                else if (blueCount > greenCount && blueCount > redCount && blueCount > blackCount) newColor = Color.blue;
+                else if (greenCount > redCount && greenCount > blueCount && greenCount > blackCount) newColor = Color.green;
+
+                for (int j = startIndex; j < i; j++)
+                {
+                    t.SetPixel(j, 4 + index, newColor);
+                }
+                startIndex = i;
+                redCount = 0;
+                greenCount = 0;
+                blueCount = 0;
+                blackCount = 0;
+                applyFound = false;
+            }
+            
+
+        }
+    }
+
+    private void MarkGradianLineInTheTexture(int totalPixel, float left, float right,int gradianCount, int pixelPerGradian, Texture2D texture )
+    {
+       
+        int adjustedEndPosition = GetRatioPosition(totalPixel, pixelPerGradian, gradianCount-1, left, right);
+        int multiplicator = totalPixel / adjustedEndPosition;
+        for (int iShouldHave = 1; iShouldHave < gradianCount; iShouldHave++)
+        {
+            int pixelShouldHave = iShouldHave * pixelPerGradian;
+            float percent = pixelShouldHave / (float)pixelPerGradian;
+            // Set the pixel color to yellow for the expected position
+            //m_textureFourLine.SetPixel(pixelShouldHave, 3, Color.yellow);
+            //m_textureFourLine.SetPixel(pixelShouldHave, 2, Color.yellow);
+            //m_textureFourLine.SetPixel(pixelShouldHave, 1, Color.yellow);
+            //m_textureFourLine.SetPixel(pixelShouldHave, 0, Color.yellow);
+            int realPixelPositionWithHomographyAdjustment = GetRatioPosition(totalPixel, pixelPerGradian, iShouldHave, left, right);
+            realPixelPositionWithHomographyAdjustment *= multiplicator;
+            // Set the pixel color to magenta for the adjusted position
+            texture.SetPixel(realPixelPositionWithHomographyAdjustment, 3, Color.magenta);
+            texture.SetPixel(realPixelPositionWithHomographyAdjustment, 2, Color.magenta);
+            texture.SetPixel(realPixelPositionWithHomographyAdjustment, 1, Color.magenta);
+            texture.SetPixel(realPixelPositionWithHomographyAdjustment, 0, Color.magenta);
+        }
+    }
+
+    private int GetRatioPosition(int totalPixel, int pixelPerGradian,int index, float leftSideSize, float rightSideSize)
+    {
+
+        float percentLeft=1;
+        float percentRight=1;
+
+        if (leftSideSize > rightSideSize)
+        {
+            percentLeft = 1;
+            percentRight = rightSideSize / leftSideSize;
+        }
+        else {
+
+            percentRight = 1;
+            percentLeft = leftSideSize / rightSideSize;
+        }
+
+            float pixelShouldHaveb = index * pixelPerGradian;
+        float t = (float)pixelShouldHaveb / (float)totalPixel;
+        float ratio = Mathf.Lerp(percentLeft, percentRight, t);
+        float realPixelPositionWithHomographyAdjustment = pixelShouldHaveb * ratio;
+        realPixelPositionWithHomographyAdjustment = Mathf.Clamp(realPixelPositionWithHomographyAdjustment, 0, totalPixel - 1);
+        return (int) realPixelPositionWithHomographyAdjustment;
+    }
+
+    public float m_testMultiplicator=1;
 
     private Vector2Int LerpPoint(Vector2 startPercent, Vector2 endPercent, double t)
     {
